@@ -1,0 +1,17 @@
+[package]
+
+name = "bip"
+version = "0.0.1"
+authors = ["Huon Wilson <dbau.pp@gmail.com>"]
+
+homepage = "https://github.com/huonw/bip"
+repository = "https://github.com/huonw/bip"
+documentation = "http://huonw.github.io/bip/bip/"
+license = "MIT/Apache-2.0"
+keywords = ["box"]
+readme = "README.md"
+
+description = """
+bip (`Box` in place) provides a fully generic in-place `map` for
+the `Box` type, taking care to be panic-safe and not leak memory.
+"""
