@@ -1,11 +1,10 @@
-#![feature(unsafe_destructor, alloc)]
-#![cfg_attr(test, feature(std_misc))]
-
 //! bip (`Box` in place) provides a fully generic in-place `map` for
 //! the `Box` type, taking care to be panic-safe and not leak memory.
 //!
 //! [Available on
 //! crates.io](http://crates.io/crates/bip). [Source](https://github.com/huonw/bip).
+
+#![feature(alloc)]
 
 use std::rt::heap;
 use std::{mem,ptr};
@@ -16,7 +15,6 @@ struct Dropper<T> {
     ptr: *mut T
 }
 
-#[unsafe_destructor]
 impl<T> Drop for Dropper<T> {
     fn drop(&mut self) {
         unsafe {
@@ -72,7 +70,7 @@ pub fn map_in_place<T, U, F>(x: Box<T>, f: F) -> Box<U> where F: FnOnce(T) -> U 
 #[cfg(test)]
 mod tests {
     use super::map_in_place;
-    use std::thread::Thread;
+    use std::thread;
     use std::sync::atomic::{AtomicUsize, ATOMIC_USIZE_INIT, Ordering};
 
     #[derive(PartialEq, Debug)]
@@ -89,7 +87,7 @@ mod tests {
     #[test]
     fn in_place() {
         let x = Box::new(NotCopy(1));
-        let address_x = &*x as *const _;
+        let address_x = &*x as *const NotCopy;
         let y = map_in_place(x, |x| NotCopy(x.0 + 1));
         let address_y = &*y as *const _;
 
@@ -116,19 +114,19 @@ mod tests {
         COUNT.store(0, Ordering::SeqCst);
         let value = Box::new(Foo { _x: 1 });
 
-        let _ = Thread::scoped(|| {
+        let _ = thread::spawn(|| {
             map_in_place(value, |_| -> Bar { panic!() });
         }).join();
         assert_eq!(COUNT.load(Ordering::SeqCst), 1);
     }
 
     #[test]
-    #[should_fail]
+    #[should_panic]
     fn mismatching_sizes() {
         map_in_place(Box::new(1i32), |_| 0i16);
     }
     #[test]
-    #[should_fail]
+    #[should_panic]
     fn insufficient_alignment() {
         map_in_place(Box::new([0u8; 8]), |_| 0u64);
     }
