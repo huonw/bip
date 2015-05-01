@@ -15,3 +15,6 @@ description = """
 bip (`Box` in place) provides a fully generic in-place `map` for
 the `Box` type, taking care to be panic-safe and not leak memory.
 """
+
+[features]
+unstable = []
