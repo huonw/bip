@@ -1,7 +1,6 @@
 language: rust
 rust:
   - nightly
-  - beta
 sudo: required
 
 before_script:
@@ -13,7 +12,7 @@ script:
       travis-cargo bench &&
       travis-cargo doc
 after_success:
-  - travis-cargo --only beta doc-upload
+  - travis-cargo doc-upload
   - travis-cargo coveralls
 env:
   global:
