@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `map_in_place` fn in crate `bip`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, map_in_place">
+
+    <title>bip::map_in_place - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <section class="sidebar">
+        
+        <p class='location'><a href='index.html'>bip</a></p><script>window.sidebarCurrent = {name: 'map_in_place', ty: 'fn', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </section>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press 'S' to search, '?' for more options..."
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content fn">
+<h1 class='fqn'><span class='in-band'>Function <a href='index.html'>bip</a>::<wbr><a class='fn' href=''>map_in_place</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="#" title="collapse all docs">[&minus;]</a>
+        </span><a id='src-42' class='srclink' href='../src/bip/lib.rs.html#49-68' title='goto source code'>[src]</a></span></h1>
+<pre class='rust fn'>pub fn map_in_place&lt;T, U, F&gt;(x: <a class='struct' href='http://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html' title='alloc::boxed::Box'>Box</a>&lt;T&gt;, f: F) -&gt; <a class='struct' href='http://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html' title='alloc::boxed::Box'>Box</a>&lt;U&gt; <span class='where'>where F: <a class='trait' href='http://doc.rust-lang.org/nightly/core/ops/trait.FnOnce.html' title='core::ops::FnOnce'>FnOnce</a>(T) -&gt; U</span></pre><div class='docblock'><p>Execute <code>f</code> on the data in <code>x</code>, replacing the output into the same
+allocation.</p>
+
+<p>This is semantically equivalent to <code>Box::new(f(*x))</code>, but avoids
+the allocation by reusing the memory of <code>x</code> directly. <code>map</code> will
+not cause unsafety or leak memory if <code>f</code> panics.</p>
+
+<p><code>T</code> and <code>U</code> must have the same size, and the alignment (measured
+by <code>std::mem::min_align_of</code>) of <code>T</code> must be at least as large as
+that of <code>U</code>. A violation of either of these requirements will
+result in a runtime panic.</p>
+
+<h1 id="example" class='section-header'><a
+                           href="#example">Example</a></h1><pre id='rust-example-rendered' class='rust '>
+<span class='kw'>let</span> <span class='ident'>x</span> <span class='op'>=</span> <span class='ident'>Box</span>::<span class='ident'>new</span>(<span class='number'>1_i32</span>);
+<span class='kw'>let</span> <span class='ident'>address</span> <span class='op'>=</span> <span class='kw-2'>&amp;</span><span class='op'>*</span><span class='ident'>x</span> <span class='kw'>as</span> <span class='op'>*</span><span class='kw'>const</span> _ <span class='kw'>as</span> <span class='ident'>usize</span>;
+
+<span class='kw'>let</span> <span class='ident'>new_x</span> <span class='op'>=</span> <span class='ident'>bip</span>::<span class='ident'>map_in_place</span>(<span class='ident'>x</span>, <span class='op'>|</span><span class='ident'>a</span><span class='op'>|</span> <span class='ident'>a</span> <span class='kw'>as</span> <span class='ident'>f32</span> <span class='op'>+</span> <span class='number'>1.0</span>);
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='op'>*</span><span class='ident'>new_x</span>, <span class='number'>2.0</span>);
+
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>address</span>, <span class='kw-2'>&amp;</span><span class='op'>*</span><span class='ident'>new_x</span> <span class='kw'>as</span> <span class='op'>*</span><span class='kw'>const</span> _ <span class='kw'>as</span> <span class='ident'>usize</span>);
+</pre>
+</div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <div id="help" class="hidden">
+        <div class="shortcuts">
+            <h1>Keyboard shortcuts</h1>
+            <dl>
+                <dt>?</dt>
+                <dd>Show this help dialog</dd>
+                <dt>S</dt>
+                <dd>Focus the search field</dd>
+                <dt>&larrb;</dt>
+                <dd>Move up in search results</dd>
+                <dt>&rarrb;</dt>
+                <dd>Move down in search results</dd>
+                <dt>&#9166;</dt>
+                <dd>Go to active search result</dd>
+            </dl>
+        </div>
+        <div class="infos">
+            <h1>Search tricks</h1>
+            <p>
+                Prefix searches with a type followed by a colon (e.g.
+                <code>fn:</code>) to restrict the search to a given type.
+            </p>
+            <p>
+                Accepted types are: <code>fn</code>, <code>mod</code>,
+                <code>struct</code>, <code>enum</code>,
+                <code>trait</code>, <code>typedef</code> (or
+                <code>tdef</code>).
+            </p>
+        </div>
+    </div>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "bip";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../jquery.js"></script>
+    <script src="../main.js"></script>
+    
+    <script async src="../search-index.js"></script>
+</body>
+</html>
